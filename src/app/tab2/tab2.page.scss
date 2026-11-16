@@ -1,0 +1,79 @@
+.vs-card {
+  background: #ffffff;
+  border: 2px solid #ffcb05;
+  border-radius: 16px;
+  margin: 0;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.vs-number {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #8a6d00;
+}
+
+.vs-img {
+  height: 110px;
+  width: 110px;
+  object-fit: contain;
+  margin-top: 14px;
+}
+
+.vs-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+.stats-card {
+  background: #ffffff;
+  border: 2px solid #ffcb05;
+  border-radius: 16px;
+  margin-inline: 4px;
+}
+
+.stat-compare-block {
+  margin-bottom: 12px;
+}
+
+.stat-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.stat-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.vs-row {
+  position: relative;
+}
+
+.vs-badge {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffcb05;
+  color: #1a1a1a;
+  border: 3px solid #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}

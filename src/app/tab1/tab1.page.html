@@ -1,0 +1,171 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title><strong>Pokédex</strong></ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onPokeballTap()" aria-label="Pokébola" class="pokeball-btn">
+        <span class="pokeball-icon"></span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-searchbar
+      placeholder="Buscar por nombre o # (ej. pikachu, 25)..."
+      (ionInput)="onSearchChange($event)"
+      [debounce]="500">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (isLoading && pokemonList.length === 0) {
+    <div class="ion-text-center ion-padding">
+      <ion-spinner color="secondary" name="crescent"></ion-spinner>
+      <p>Buscando en la Pokédex...</p>
+    </div>
+  }
+
+  @if (notFound) {
+    <div class="ion-text-center ion-padding">
+      <p>No se encontró ningún Pokémon con "{{ searchTerm }}".</p>
+    </div>
+  }
+
+  <!-- Nivel 1: Cuadrícula visual atractiva en amarillo y blanco -->
+  <ion-grid>
+    <ion-row>
+      @for (p of pokemonList; track p.id) {
+        <ion-col size="6" size-md="4" size-lg="3">
+          <ion-card button (click)="openDetail(p)" class="poke-card">
+            <div class="poke-img-box">
+              <span class="poke-number">#{{ p.id }}</span>
+              <img [src]="p.mainImage" [alt]="p.name" />
+            </div>
+            <ion-card-header class="ion-text-center">
+              <ion-card-title class="ion-text-capitalize poke-name">{{ p.name }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content class="ion-text-center">
+              @for (t of p.types; track t) {
+                <ion-badge color="secondary" class="ion-margin-end ion-text-capitalize">{{ t }}</ion-badge>
+              }
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      }
+    </ion-row>
+  </ion-grid>
+
+  <ion-infinite-scroll (ionInfinite)="loadPokemon($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más Pokémon..."></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <!-- Aviso legal corto permanente al pie -->
+  <div class="legal-footer ion-text-center ion-padding-top">
+    <small>
+      Aplicación académica no oficial. Pokémon y sus personajes son marcas registradas de Nintendo / Creatures Inc. / GAME FREAK inc. Datos provistos por PokéAPI.
+    </small>
+  </div>
+
+  <!-- MODAL DE DETALLES (NIVEL 1 Y NIVEL 2) -->
+  <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title class="ion-text-capitalize">#{{ selectedPokemon?.id }} {{ selectedPokemon?.name }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding" *ngIf="selectedPokemon">
+        <!-- Visor Principal -->
+        <div class="detail-hero ion-text-center">
+          <img [src]="activeImage" [alt]="selectedPokemon.name" class="hero-img" />
+          <div>
+            @for (t of selectedPokemon.types; track t) {
+              <ion-chip color="secondary" class="ion-text-capitalize">
+                <ion-label>{{ t }}</ion-label>
+              </ion-chip>
+            }
+          </div>
+        </div>
+
+        <!-- Nivel 2: Botón Reproducir Sonido -->
+        <div class="ion-text-center ion-margin-vertical">
+          <ion-button
+            color="primary"
+            expand="block"
+            [disabled]="!selectedPokemon.cryUrl || isPlayingSound"
+            (click)="playCry(selectedPokemon.cryUrl)">
+            <ion-icon name="volume-high-outline" slot="start"></ion-icon>
+            {{ isPlayingSound ? 'Reproduciendo sonido...' : 'Escuchar Sonido del Pokémon' }}
+          </ion-button>
+        </div>
+
+        <!-- Nivel 2: Visualizar animación -->
+        <ion-card class="section-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="sparkles-outline"></ion-icon> Animación
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="ion-text-center">
+            <img [src]="selectedPokemon.gifUrl" alt="Animación" style="height: 96px; image-rendering: pixelated;" />
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Nivel 2: Avistamientos (Galería de +5 imágenes) -->
+        <ion-card class="section-card">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="images-outline"></ion-icon> Avistamientos
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <div class="gallery-strip">
+              @for (img of selectedPokemon.gallery; track img) {
+                <img
+                  [src]="img"
+                  class="thumb-img"
+                  [class.selected-thumb]="activeImage === img"
+                  (click)="selectGalleryImage(img)" />
+              }
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Nivel 1: Datos físicos y estadísticas base -->
+        <ion-card class="section-card">
+          <ion-card-header>
+            <ion-card-title>Ficha Técnica</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p><strong>Altura:</strong> {{ selectedPokemon.height }} m &nbsp;|&nbsp; <strong>Peso:</strong> {{ selectedPokemon.weight }} kg</p>
+            <p><strong>Experiencia Base:</strong> {{ selectedPokemon.base_experience }}</p>
+            <hr />
+            @for (st of selectedPokemon.stats; track st.name) {
+              <div class="stat-row">
+                <span class="ion-text-capitalize">{{ st.name }}</span>
+                <strong>{{ st.value }}</strong>
+              </div>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <!-- Pokémon aleatorio interactivo en la esquina inferior derecha -->
+  @if (cornerPokemon) {
+    <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+      <ion-fab-button
+        color="primary"
+        (click)="playCornerPokemon()"
+        [title]="'Escuchar a ' + cornerPokemon.name"
+        class="corner-poke-btn">
+        <img [src]="cornerPokemon.gifUrl || cornerPokemon.mainImage" [alt]="cornerPokemon.name" />
+      </ion-fab-button>
+    </ion-fab>
+  }
+</ion-content>

@@ -1,0 +1,137 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title><strong>Comparador Pokédex</strong></ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Buscadores individuales sincronizados con ngModel -->
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-searchbar
+          placeholder="Buscar Pokémon 1 (ej. pikachu, 25)..."
+          [(ngModel)]="search1Text"
+          [debounce]="500"
+          (ionInput)="onSearch1($event)">
+        </ion-searchbar>
+        @if (error1) {
+          <ion-text color="danger"><p class="ion-text-center ion-no-margin"><small>{{ error1 }}</small></p></ion-text>
+        }
+      </ion-col>
+
+      <ion-col size="12" size-md="6">
+        <ion-searchbar
+          placeholder="Buscar Pokémon 2 (ej. charizard, 6)..."
+          [(ngModel)]="search2Text"
+          [debounce]="500"
+          (ionInput)="onSearch2($event)">
+        </ion-searchbar>
+        @if (error2) {
+          <ion-text color="danger"><p class="ion-text-center ion-no-margin"><small>{{ error2 }}</small></p></ion-text>
+        }
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  @if (isLoading) {
+    <div class="ion-text-center ion-padding">
+      <ion-spinner color="secondary"></ion-spinner>
+    </div>
+  }
+
+  <!-- Tarjetas lado a lado con emblema VS central -->
+  @if (pokemon1 && pokemon2) {
+    <ion-grid>
+      <ion-row class="vs-row">
+        <div class="vs-badge">VS</div>
+
+        <!-- Tarjeta Pokémon 1 -->
+        <ion-col size="6" class="ion-text-center">
+          <ion-card class="vs-card">
+            <span class="vs-number">#{{ pokemon1.id }}</span>
+            <img [src]="pokemon1.mainImage" class="vs-img" />
+            <ion-card-header>
+              <ion-card-title class="ion-text-capitalize vs-title">{{ pokemon1.name }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="ion-margin-bottom">
+                @for (t of pokemon1.types; track $index) {
+                  <ion-badge color="secondary" class="ion-margin-end ion-text-capitalize">{{ t }}</ion-badge>
+                }
+              </div>
+              <p><strong>Altura:</strong> {{ pokemon1.height }} m</p>
+              <p><strong>Peso:</strong> {{ pokemon1.weight }} kg</p>
+              <p><strong>Total Stats:</strong> {{ getTotalStats(pokemon1) }}</p>
+              <ion-button size="small" fill="outline" color="dark" class="ion-margin-top" (click)="playCry(pokemon1.cryUrl)">
+                <ion-icon name="volume-high-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Tarjeta Pokémon 2 -->
+        <ion-col size="6" class="ion-text-center">
+          <ion-card class="vs-card">
+            <span class="vs-number">#{{ pokemon2.id }}</span>
+            <img [src]="pokemon2.mainImage" class="vs-img" />
+            <ion-card-header>
+              <ion-card-title class="ion-text-capitalize vs-title">{{ pokemon2.name }}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="ion-margin-bottom">
+                @for (t of pokemon2.types; track $index) {
+                  <ion-badge color="secondary" class="ion-margin-end ion-text-capitalize">{{ t }}</ion-badge>
+                }
+              </div>
+              <p><strong>Altura:</strong> {{ pokemon2.height }} m</p>
+              <p><strong>Peso:</strong> {{ pokemon2.weight }} kg</p>
+              <p><strong>Total Stats:</strong> {{ getTotalStats(pokemon2) }}</p>
+              <ion-button size="small" fill="outline" color="dark" class="ion-margin-top" (click)="playCry(pokemon2.cryUrl)">
+                <ion-icon name="volume-high-outline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <!-- Comparación visual de estadísticas base -->
+    <ion-card class="stats-card">
+      <ion-card-header>
+        <ion-card-title style="font-size: 16px; text-align: center;">Estadísticas Base</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        @for (stat of pokemon1.stats; track $index; let i = $index) {
+          <div class="stat-compare-block">
+            <div class="stat-labels">
+              <ion-badge [color]="stat.value >= pokemon2.stats[i].value ? 'success' : 'medium'">
+                {{ stat.value }}
+              </ion-badge>
+              <span class="ion-text-capitalize stat-name">{{ stat.name }}</span>
+              <ion-badge [color]="pokemon2.stats[i].value >= stat.value ? 'success' : 'medium'">
+                {{ pokemon2.stats[i].value }}
+              </ion-badge>
+            </div>
+            <ion-grid class="ion-no-padding">
+              <ion-row>
+                <ion-col size="6" style="padding-right: 4px;">
+                  <ion-progress-bar
+                    [value]="stat.value / 200"
+                    [color]="stat.value >= pokemon2.stats[i].value ? 'success' : 'primary'">
+                  </ion-progress-bar>
+                </ion-col>
+                <ion-col size="6" style="padding-left: 4px;">
+                  <ion-progress-bar
+                    [value]="pokemon2.stats[i].value / 200"
+                    [color]="pokemon2.stats[i].value >= stat.value ? 'success' : 'primary'">
+                  </ion-progress-bar>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        }
+      </ion-card-content>
+    </ion-card>
+  }
+</ion-content>
