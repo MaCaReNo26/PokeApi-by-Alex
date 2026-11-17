@@ -42,7 +42,7 @@ export class Tab1Page implements OnInit {
   isModalOpen = false;
   isPlayingSound = false;
 
-  // Variables para la Pokébola y el Pokémon de la esquina
+  // easter egg
   pokeballTaps = 0;
   cornerPokemon: PokemonDetail | null = null;
   isCornerPlaying = false;
@@ -143,7 +143,7 @@ export class Tab1Page implements OnInit {
     };
   }
 
-  // Easter Egg: Al presionar 7 veces la Pokébola abre comparación aleatoria
+  // easter egg
   onPokeballTap() {
     this.pokeballTaps++;
     if (this.pokeballTaps >= 7) {
@@ -160,7 +160,7 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  // Carga un Pokémon aleatorio para la esquina inferior derecha
+  // Carga un Pokémon aleatorio 
   loadRandomCornerPokemon() {
     const randomId = Math.floor(Math.random() * 1025) + 1;
     this.pokemonService.getPokemonDetail(randomId).subscribe({
@@ -170,7 +170,7 @@ export class Tab1Page implements OnInit {
     });
   }
 
-  // Reproduce su sonido oficial y cambia a otro Pokémon aleatorio
+  // sonido y cambia a otro Pokémon aleatorio
   playCornerPokemon() {
     if (!this.cornerPokemon || this.isCornerPlaying) return;
 

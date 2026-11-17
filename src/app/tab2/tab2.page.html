@@ -5,7 +5,6 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- Buscadores individuales sincronizados con ngModel -->
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col size="12" size-md="6">
@@ -39,14 +38,11 @@
       <ion-spinner color="secondary"></ion-spinner>
     </div>
   }
-
-  <!-- Tarjetas lado a lado con emblema VS central -->
   @if (pokemon1 && pokemon2) {
     <ion-grid>
       <ion-row class="vs-row">
         <div class="vs-badge">VS</div>
 
-        <!-- Tarjeta Pokémon 1 -->
         <ion-col size="6" class="ion-text-center">
           <ion-card class="vs-card">
             <span class="vs-number">#{{ pokemon1.id }}</span>
@@ -70,7 +66,6 @@
           </ion-card>
         </ion-col>
 
-        <!-- Tarjeta Pokémon 2 -->
         <ion-col size="6" class="ion-text-center">
           <ion-card class="vs-card">
             <span class="vs-number">#{{ pokemon2.id }}</span>
@@ -96,7 +91,6 @@
       </ion-row>
     </ion-grid>
 
-    <!-- Comparación visual de estadísticas base -->
     <ion-card class="stats-card">
       <ion-card-header>
         <ion-card-title style="font-size: 16px; text-align: center;">Estadísticas Base</ion-card-title>

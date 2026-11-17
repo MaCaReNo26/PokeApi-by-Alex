@@ -30,7 +30,6 @@
     </div>
   }
 
-  <!-- Nivel 1: Cuadrícula visual atractiva en amarillo y blanco -->
   <ion-grid>
     <ion-row>
       @for (p of pokemonList; track p.id) {
@@ -58,14 +57,12 @@
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más Pokémon..."></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <!-- Aviso legal corto permanente al pie -->
   <div class="legal-footer ion-text-center ion-padding-top">
     <small>
       Aplicación académica no oficial. Pokémon y sus personajes son marcas registradas de Nintendo / Creatures Inc. / GAME FREAK inc. Datos provistos por PokéAPI.
     </small>
   </div>
 
-  <!-- MODAL DE DETALLES (NIVEL 1 Y NIVEL 2) -->
   <ion-modal [isOpen]="isModalOpen" (didDismiss)="closeModal()">
     <ng-template>
       <ion-header>
@@ -80,7 +77,6 @@
       </ion-header>
 
       <ion-content class="ion-padding" *ngIf="selectedPokemon">
-        <!-- Visor Principal -->
         <div class="detail-hero ion-text-center">
           <img [src]="activeImage" [alt]="selectedPokemon.name" class="hero-img" />
           <div>
@@ -92,7 +88,6 @@
           </div>
         </div>
 
-        <!-- Nivel 2: Botón Reproducir Sonido -->
         <div class="ion-text-center ion-margin-vertical">
           <ion-button
             color="primary"
@@ -104,7 +99,6 @@
           </ion-button>
         </div>
 
-        <!-- Nivel 2: Visualizar animación -->
         <ion-card class="section-card">
           <ion-card-header>
             <ion-card-title>
@@ -116,7 +110,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Nivel 2: Avistamientos (Galería de +5 imágenes) -->
         <ion-card class="section-card">
           <ion-card-header>
             <ion-card-title>
@@ -136,7 +129,6 @@
           </ion-card-content>
         </ion-card>
 
-        <!-- Nivel 1: Datos físicos y estadísticas base -->
         <ion-card class="section-card">
           <ion-card-header>
             <ion-card-title>Ficha Técnica</ion-card-title>
@@ -156,7 +148,6 @@
       </ion-content>
     </ng-template>
   </ion-modal>
-  <!-- Pokémon aleatorio interactivo en la esquina inferior derecha -->
   @if (cornerPokemon) {
     <ion-fab slot="fixed" vertical="bottom" horizontal="end">
       <ion-fab-button

@@ -32,7 +32,7 @@ export class Pokemon {
     const query = String(nameOrId).trim().toLowerCase();
     return this.http.get<any>(`${this.baseUrl}/${query}`).pipe(
       map((data) => {
-        // Nivel 2: Galería de al menos 5 imágenes reales de la API
+        // avistamientos
         const rawImages = [
           data.sprites?.other?.['official-artwork']?.front_default,
           data.sprites?.other?.['official-artwork']?.front_shiny,
@@ -44,13 +44,13 @@ export class Pokemon {
           data.sprites?.back_shiny
         ].filter((img): img is string => Boolean(img));
 
-        // Nivel 2: GIF / WebP animado (Showdown o Black-White animated)
+        // gif
         const gifUrl =
           data.sprites?.other?.showdown?.front_default ||
           data.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default ||
           data.sprites?.front_default;
 
-        // Nivel 2: Sonido (Grito oficial en .ogg de PokeAPI)
+        // sonido
         const cryUrl = data.cries?.latest || data.cries?.legacy || null;
 
         return {
